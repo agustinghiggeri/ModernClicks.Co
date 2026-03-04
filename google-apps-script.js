@@ -25,6 +25,28 @@ function doPost(e) {
   try {
     var p = e.parameter;
 
+    // ── Admin: config write action ─────────────────────────────────────────
+    if (p.action === 'setConfig') {
+      var token = p.token || '';
+      var adminToken = getAdminToken();
+      if (!adminToken || token !== adminToken) {
+        return ContentService
+          .createTextOutput(JSON.stringify({ status: 'error', message: 'Unauthorized' }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+      try {
+        var cfgObj = JSON.parse(p.config || '{}');
+        writeConfigToSheet(cfgObj);
+        return ContentService
+          .createTextOutput(JSON.stringify({ status: 'ok' }))
+          .setMimeType(ContentService.MimeType.JSON);
+      } catch (parseErr) {
+        return ContentService
+          .createTextOutput(JSON.stringify({ status: 'error', message: 'Invalid config JSON' }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+
     // --- Sanitize: strip HTML tags, cap length, and block formula injection ---
     function clean(val) {
       var str = String(val || '').replace(/<[^>]*>/g, '').trim().substring(0, 500);
@@ -119,7 +141,71 @@ function doPost(e) {
   }
 }
 
+// ── Config sheet helpers ────────────────────────────────────────────────────
+
+function getConfigSheet() {
+  var ss    = SpreadsheetApp.openById(getSheetId());
+  var sheet = ss.getSheetByName('Config');
+  if (!sheet) {
+    sheet = ss.insertSheet('Config');
+    sheet.appendRow(['key', 'value']);
+  }
+  return sheet;
+}
+
+function readConfigFromSheet() {
+  var sheet = getConfigSheet();
+  var data  = sheet.getDataRange().getValues();
+  var cfg   = {};
+  for (var i = 1; i < data.length; i++) {
+    var key = data[i][0]; var val = data[i][1];
+    if (!key) continue;
+    // Parse booleans and numbers stored as strings
+    if (val === 'true')  val = true;
+    else if (val === 'false') val = false;
+    else if (!isNaN(val) && val !== '') val = Number(val);
+    cfg[key] = val;
+  }
+  return cfg;
+}
+
+function writeConfigToSheet(cfgObj) {
+  var sheet = getConfigSheet();
+  // Clear existing data (keep header)
+  var lastRow = sheet.getLastRow();
+  if (lastRow > 1) sheet.deleteRows(2, lastRow - 1);
+  // Write each key-value pair
+  var rows = [];
+  for (var k in cfgObj) {
+    if (cfgObj.hasOwnProperty(k)) rows.push([k, String(cfgObj[k])]);
+  }
+  if (rows.length > 0) sheet.getRange(2, 1, rows.length, 2).setValues(rows);
+}
+
+function getAdminToken() {
+  return PropertiesService.getScriptProperties().getProperty('ADMIN_TOKEN');
+}
+
+// ── GET: serve public config + handle enumeration guard ─────────────────────
+
 function doGet(e) {
-  // Do not confirm endpoint existence to prevent enumeration
-  return HtmlService.createHtmlOutput('<p>Not found.</p>').setXFrameOptionsMode(HtmlService.XFrameOptionsMode.DENY);
+  var action = e && e.parameter ? (e.parameter.action || '') : '';
+
+  if (action === 'config') {
+    try {
+      var cfg = readConfigFromSheet();
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: 'ok', config: cfg }))
+        .setMimeType(ContentService.MimeType.JSON);
+    } catch (err) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: 'ok', config: {} }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  // All other GET requests: return nothing useful
+  return ContentService
+    .createTextOutput(JSON.stringify({ status: 'ok' }))
+    .setMimeType(ContentService.MimeType.JSON);
 }

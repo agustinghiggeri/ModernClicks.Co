@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="/mc-config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-Frame-Options" content="DENY">
@@ -77,7 +78,7 @@
                 <!-- Connect on LinkedIn -->
                 <div class="ty-linkedin fade-up delay-4">
                     <p class="ty-linkedin-text">In the meantime, let's connect:</p>
-                    <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                    <a id="linkedin-link" href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                             <path d="M16 8C17.5913 8 19.1174 8.63214 20.2426 9.75736C21.3679 10.8826 22 12.4087 22 14V21H18V14C18 13.4696 17.7893 12.9609 17.4142 12.5858C17.0391 12.2107 16.5304 12 16 12C15.4696 12 14.9609 12.2107 14.5858 12.5858C14.2107 12.9609 14 13.4696 14 14V21H10V14C10 12.4087 10.6321 10.8826 11.7574 9.75736C12.8826 8.63214 14.4087 8 16 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M6 9H2V21H6V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -173,5 +174,17 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+      (function() {
+        var DEFAULT_LI = 'https://www.linkedin.com/';
+        function setLinkedIn() {
+          var url = (window.SiteConfig ? window.SiteConfig.get('linkedinUrl') : DEFAULT_LI) || DEFAULT_LI;
+          var el = document.getElementById('linkedin-link');
+          if (el) el.href = url;
+        }
+        if (window.SiteConfig) { setLinkedIn(); }
+        else { document.addEventListener('siteconfig:ready', setLinkedIn, { once: true }); }
+      })();
+    </script>
 </body>
 </html>

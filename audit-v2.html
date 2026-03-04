@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="/mc-config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-Frame-Options" content="DENY">
@@ -581,7 +582,17 @@
 
                             <!-- Google Calendar Appointment Scheduling begin -->
                             <div class="calendar-container">
-                                <iframe src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3sxWJQLh1AGfBlYs68bKR9uckO42vVnsWzozkEnbBFu5ftyD23NHi-2PXeJUPKy_rfUzzNoh98?gv=true" style="border: 0" width="100%" height="600" frameborder="0"></iframe>
+                                <iframe id="calendar-iframe" src="" style="border: 0" width="100%" height="600" frameborder="0"></iframe>
+                                <script>
+                                  (function() {
+                                    var DEFAULT_CAL = 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3sxWJQLh1AGfBlYs68bKR9uckO42vVnsWzozkEnbBFu5ftyD23NHi-2PXeJUPKy_rfUzzNoh98?gv=true';
+                                    function setCalSrc() {
+                                      document.getElementById('calendar-iframe').src = (window.SiteConfig ? window.SiteConfig.get('calendarUrl') : DEFAULT_CAL) || DEFAULT_CAL;
+                                    }
+                                    if (window.SiteConfig) { setCalSrc(); }
+                                    else { document.addEventListener('siteconfig:ready', setCalSrc, { once: true }); }
+                                  })();
+                                </script>
                             </div>
                             <!-- end Google Calendar Appointment Scheduling -->
 

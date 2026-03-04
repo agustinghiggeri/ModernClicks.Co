@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="/mc-config.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Meta Ads Audit Request</title>
@@ -334,10 +335,11 @@
 </div>
 
 <script>
-  // Production URL (workflow must be ACTIVE):
-  const WEBHOOK_URL = 'https://n8n.srv1201694.hstgr.cloud/webhook/meta-audit';
-  // Test URL (use while workflow is in "Listen for test event" mode):
-  // const WEBHOOK_URL = 'https://n8n.srv1201694.hstgr.cloud/webhook-test/meta-audit';
+  // Webhook URL resolved from SiteConfig (set via admin panel)
+  const _cfg = window.SiteConfig;
+  const WEBHOOK_URL = _cfg && _cfg.get('webhookTestMode')
+    ? 'https://n8n.srv1201694.hstgr.cloud/webhook-test/meta-audit'
+    : (_cfg ? _cfg.get('webhookUrl') : 'https://n8n.srv1201694.hstgr.cloud/webhook/meta-audit');
 
   document.getElementById('auditForm').addEventListener('submit', async (e) => {
     e.preventDefault();

@@ -1,0 +1,382 @@
+{
+  "name": "V2 Multi-Call Audit Funnel - Email Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "v2-discovery-submitted",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook - Form Submitted",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "v2-discovery-webhook"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Your Discovery Call is Confirmed - Next Steps",
+        "message": "=Hey {{ $json.name || 'there' }},\n\nThanks for booking your discovery call!\n\nHere's what happens next:\n\n📅 **Your Discovery Call**\nYou should have received a Google Calendar invite with the meeting link. If you haven't seen it, please check your spam folder.\n\n**On the call, we'll:**\n• Discuss your current ad account (15 minutes)\n• Walk you through granting view-only access\n• Schedule your audit presentation call\n\n**What to have ready:**\n- Access to your Meta Ads Manager or Google Ads account\n- Your biggest challenges with paid ads\n\nI'm looking forward to talking with you!\n\nAgustin\nFunnel Sales Agency\n\nP.S. Can't make it? Reschedule using the link in your Google Calendar invite.",
+        "options": {
+          "ccList": "",
+          "bccList": ""
+        }
+      },
+      "id": "email-1-confirmation",
+      "name": "Email 1: Discovery Call Confirmation",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [470, 300],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIALS_ID",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "unit": "hours",
+        "amount": "={{ $json.hoursUntilCall - 1 }}"
+      },
+      "id": "wait-until-1-hour-before",
+      "name": "Wait Until 1 Hour Before Call",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [690, 300],
+      "webhookId": "wait-1-hour-before"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Starting in 1 hour - {{ $json.name }}",
+        "message": "=Hey {{ $json.name || 'there' }},\n\nYour discovery call starts in 1 hour:\n\n🔗 Join Link: {{ $json.meetingLink }}\n⏰ Time: {{ $json.callTime }}\n\n**Quick prep checklist:**\n✓ Have your Meta/Google Ads account login ready\n✓ Be ready to share screen (we'll walk you through granting access)\n✓ Think about your #1 challenge with ads right now\n\nSee you in 60 minutes!\n\nAgustin",
+        "options": {}
+      },
+      "id": "email-2-reminder",
+      "name": "Email 2: 1-Hour Reminder",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [910, 300],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIALS_ID",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "unit": "hours",
+        "amount": 2
+      },
+      "id": "wait-for-call-completion",
+      "name": "Wait for Call to Complete",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [1130, 300],
+      "webhookId": "wait-call-complete"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.discoveryCompleted }}",
+              "operation": "equals",
+              "value2": "TRUE"
+            }
+          ]
+        }
+      },
+      "id": "check-show-up",
+      "name": "Check if Call Completed",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1350, 300]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Thanks for the call - Your audit is in progress",
+        "message": "=Hey {{ $json.name || 'there' }},\n\nGreat talking with you today!\n\nHere's what happens next:\n\n**✓ Your Account Access**\nI now have view-only access to your ad account. I'll be diving deep into your campaigns over the next 24-48 hours.\n\n**📊 Your Audit Presentation Call**\nDate: {{ $json.presentationDate }}\nTime: {{ $json.presentationTime }}\nLink: {{ $json.presentationLink }}\n\nI've sent you a Google Calendar invite for this as well.\n\n**What I'll be analyzing:**\n• Campaign structure and budget allocation\n• Creative performance and testing cadence\n• Audience targeting and segmentation\n• Attribution setup and conversion tracking\n• Opportunities for immediate wins + long-term scale\n\nI'm going to find exactly where you're losing money (and how to fix it).\n\nTalk soon!\n\nAgustin\nFunnel Sales Agency",
+        "options": {}
+      },
+      "id": "email-3-post-discovery",
+      "name": "Email 3: Post-Discovery Next Steps",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [1570, 200],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIALS_ID",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "We missed you on the call today",
+        "message": "=Hey {{ $json.name || 'there' }},\n\nI was looking forward to our discovery call today but didn't see you on the Zoom.\n\nNo worries - life happens!\n\nWant to reschedule? I have a few slots open this week:\n\n📅 Reschedule Your Discovery Call: [CALENDLY_LINK]\n\nOr if you're no longer interested, just let me know and I'll free up the spot for another brand.\n\nAgustin",
+        "options": {}
+      },
+      "id": "email-no-show",
+      "name": "Email: No-Show Follow-up",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [1570, 400],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIALS_ID",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "unit": "hours",
+        "amount": "={{ ($json.presentationTime - $now) / 3600000 - 24 }}"
+      },
+      "id": "wait-until-day-before-presentation",
+      "name": "Wait Until Day Before Presentation",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [1790, 200],
+      "webhookId": "wait-day-before"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Your Audit is Ready - Tomorrow at {{ $json.presentationTime }}",
+        "message": "=Hey {{ $json.name || 'there' }},\n\nYour ad account audit is ready!\n\nI've spent the last couple days analyzing your account and found some interesting opportunities (and a few red flags we need to address).\n\n**Your Audit Presentation:**\nDate: Tomorrow\nTime: {{ $json.presentationTime }}\nLink: {{ $json.presentationLink }}\n\n**What I'll show you:**\n• The 3-5 biggest issues costing you money\n• Quick wins you can implement immediately\n• Long-term opportunities for scaling\n• A 90-day roadmap (if we work together)\n\nBring your questions. This is your audit - I want you to get maximum value from it.\n\nSee you tomorrow!\n\nAgustin",
+        "options": {}
+      },
+      "id": "email-4-audit-ready",
+      "name": "Email 4: Audit Ready Notification",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [2010, 200],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIALS_ID",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "unit": "hours",
+        "amount": "={{ ($json.presentationTime - $now) / 3600000 - 1 }}"
+      },
+      "id": "wait-1-hour-before-presentation",
+      "name": "Wait Until 1 Hour Before Presentation",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [2230, 200],
+      "webhookId": "wait-1-hour-presentation"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Starting in 1 hour - Your Ad Audit Presentation",
+        "message": "=Hey {{ $json.name || 'there' }},\n\nYour audit presentation starts in 1 hour!\n\n🔗 Join Link: {{ $json.presentationLink }}\n⏰ Time: {{ $json.presentationTime }}\n\n**What to expect:**\nI'll walk you through the audit live, showing you exactly what I found in your account. Feel free to ask questions as we go.\n\nBring a notebook - there will be actionable insights.\n\nSee you in 60 minutes!\n\nAgustin",
+        "options": {}
+      },
+      "id": "email-5-presentation-reminder",
+      "name": "Email 5: Presentation Reminder",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [2450, 200],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIALS_ID",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "unit": "hours",
+        "amount": 2
+      },
+      "id": "wait-presentation-complete",
+      "name": "Wait for Presentation to Complete",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [2670, 200],
+      "webhookId": "wait-presentation-complete"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Your Audit Recap + Next Steps",
+        "message": "=Hey {{ $json.name || 'there' }},\n\nGreat presentation today! Here's a quick recap:\n\n**🔴 BIGGEST ISSUES WE FOUND:**\n• {{ $json.issue1 }}\n• {{ $json.issue2 }}\n• {{ $json.issue3 }}\n\n**💰 ESTIMATED ANNUAL SAVINGS:** ${{ $json.estimatedSavings }}\n\n**✅ QUICK WINS (Implement Today):**\n1. {{ $json.quickWin1 }}\n2. {{ $json.quickWin2 }}\n3. {{ $json.quickWin3 }}\n\n📎 I've also attached a PDF summary of the audit.\n\n---\n\n**WANT HELP IMPLEMENTING THIS?**\n\nIf you want us to handle the optimization and scaling for you, here's how we work:\n\n📌 What's included: [LINK TO SERVICE PAGE]\n💵 Pricing: [LINK TO PRICING]\n🎯 Guarantee: 30% ROAS improvement in 90 days or you don't pay\n\nReady to move forward? Reply to this email or book a follow-up call: [CALENDLY_LINK]\n\nEither way - implement those quick wins and let me know how they perform!\n\nAgustin\nFunnel Sales Agency",
+        "options": {}
+      },
+      "id": "email-6-post-presentation",
+      "name": "Email 6: Post-Presentation Follow-up",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [2890, 200],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIALS_ID",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook - Form Submitted": {
+      "main": [
+        [
+          {
+            "node": "Email 1: Discovery Call Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email 1: Discovery Call Confirmation": {
+      "main": [
+        [
+          {
+            "node": "Wait Until 1 Hour Before Call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Until 1 Hour Before Call": {
+      "main": [
+        [
+          {
+            "node": "Email 2: 1-Hour Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email 2: 1-Hour Reminder": {
+      "main": [
+        [
+          {
+            "node": "Wait for Call to Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Call to Complete": {
+      "main": [
+        [
+          {
+            "node": "Check if Call Completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Call Completed": {
+      "main": [
+        [
+          {
+            "node": "Email 3: Post-Discovery Next Steps",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Email: No-Show Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email 3: Post-Discovery Next Steps": {
+      "main": [
+        [
+          {
+            "node": "Wait Until Day Before Presentation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Until Day Before Presentation": {
+      "main": [
+        [
+          {
+            "node": "Email 4: Audit Ready Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email 4: Audit Ready Notification": {
+      "main": [
+        [
+          {
+            "node": "Wait Until 1 Hour Before Presentation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Until 1 Hour Before Presentation": {
+      "main": [
+        [
+          {
+            "node": "Email 5: Presentation Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email 5: Presentation Reminder": {
+      "main": [
+        [
+          {
+            "node": "Wait for Presentation to Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Presentation to Complete": {
+      "main": [
+        [
+          {
+            "node": "Email 6: Post-Presentation Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-02-12T00:00:00.000Z",
+  "versionId": "1"
+}

@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "WebFetch(domain:script.google.com)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial commit: Sales funnel with audit landing page\n\n- Main sales landing page \\(index.html\\)\n- Free audit landing page \\(audit.html\\)\n- Thank you page with Calendly integration\n- Form modals with Google Sheets integration\n- Security features: honeypot, sanitization, headers\n- Responsive dark theme design\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(ls:*)",
+      "Read(//e/Vs Code files/FunnelSalesv1/**)",
+      "Bash(git revert:*)",
+      "Bash(git fetch origin)",
+      "Bash(git merge origin/main)"
+    ]
+  }
+}

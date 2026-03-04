@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Lost in the Ad Algorithm | ModernClicks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --accent-primary: #6d5acd;
+            --accent-light: #8b7adb;
+            --text-primary: #0a0a0a;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Light theme - no grain */
+        body::before {
+            content: none;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 700px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .error-code {
+            font-size: 120px;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            line-height: 1;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .gif-container {
+            margin: 30px 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(109, 90, 205, 0.3);
+            border: 1px solid rgba(109, 90, 205, 0.3);
+        }
+
+        .gif-container img {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            display: block;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .joke {
+            font-size: 15px;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-bottom: 40px;
+            padding: 16px;
+            background: rgba(109, 90, 205, 0.05);
+            border-left: 3px solid var(--accent-primary);
+            border-radius: 8px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-light) 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(109, 90, 205, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(109, 90, 205, 0.5);
+        }
+
+        .btn-ghost {
+            background: #f8f9fa;
+            color: var(--text-primary);
+            border: 1px solid rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-ghost:hover {
+            background: #e9ecef;
+            border-color: rgba(0, 0, 0, 0.25);
+        }
+
+        .fun-facts {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .fun-facts h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-light);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .fun-fact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .fun-fact {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .fun-fact-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .fun-fact-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 640px) {
+            .error-code {
+                font-size: 80px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Floating background elements */
+        .bg-shape {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.15;
+            z-index: 0;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .bg-shape-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent-primary);
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .bg-shape-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--accent-light);
+            bottom: -150px;
+            right: -150px;
+            animation-delay: 7s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, -50px) scale(1.1); }
+            66% { transform: translate(-50px, 50px) scale(0.9); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-shape bg-shape-1"></div>
+    <div class="bg-shape bg-shape-2"></div>
+
+    <div class="container">
+        <div class="error-code">404</div>
+
+        <h1>You're More Lost Than Your Agency's Attribution Model</h1>
+
+        <div class="gif-container">
+            <img src="https://media.tenor.com/Cj9rNn9J6V4AAAAM/lost.gif" alt="Lost - completely lost" loading="lazy">
+        </div>
+
+        <p class="subtitle">
+            This page doesn't exist. Unlike your wasted ad spend, which <em>definitely</em> exists.
+        </p>
+
+        <div class="joke">
+            "I've seen better navigation from a CBO campaign with 47 active ad sets." - Anonymous Media Buyer
+        </div>
+
+        <div class="cta-buttons">
+            <a href="index.html" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back to Safety (Home)
+            </a>
+            <a href="audit.html" class="btn btn-ghost">
+                Get Free Audit Instead
+            </a>
+        </div>
+
+        <div class="fun-facts">
+            <h3>While You Were Lost...</h3>
+            <div class="fun-fact-grid">
+                <div class="fun-fact">
+                    <div class="fun-fact-label">Wasted Ad Spend</div>
+                    <div class="fun-fact-value">$4,782</div>
+                </div>
+                <div class="fun-fact">
+                    <div class="fun-fact-label">Junior AMs Confused</div>
+                    <div class="fun-fact-value">127</div>
+                </div>
+                <div class="fun-fact">
+                    <div class="fun-fact-label">ROAS Claims</div>
+                    <div class="fun-fact-value">12x (Fake)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

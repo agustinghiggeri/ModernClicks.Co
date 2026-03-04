@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meta Ads Audit Request</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --green: #10b981;
+      --red: #ef4444;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 680px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .header .logo {
+      width: 48px;
+      height: 48px;
+      background: var(--accent);
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .header .logo svg { color: white; }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .grid { display: grid; gap: 16px; }
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    label .req { color: var(--accent); margin-left: 2px; }
+    label .hint { font-weight: 400; color: var(--muted); font-size: 12px; }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+    }
+
+    input::placeholder, textarea::placeholder { color: #94a3b8; }
+
+    textarea { resize: vertical; min-height: 90px; }
+
+    select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+
+    .section-gap { margin-top: 28px; }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 28px;
+    }
+
+    .submit-btn:hover:not(:disabled) { background: var(--accent-hover); }
+    .submit-btn:active:not(:disabled) { transform: scale(0.99); }
+    .submit-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .status {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.5;
+    }
+
+    .status.loading {
+      display: flex;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+    }
+
+    .status.error {
+      display: flex;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: var(--red);
+    }
+
+    .status.success {
+      display: flex;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #15803d;
+    }
+
+    .status-spinner {
+      width: 16px; height: 16px;
+      border: 2px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .email-note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    @media (max-width: 560px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .card { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="header">
+    <div class="logo">
+      <svg width="24" height="24" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+      </svg>
+    </div>
+    <h1>Meta Ads Full Account Audit</h1>
+    <p>Fill in your account details to generate an AI-powered audit report with<br>performance analysis, creative insights, and a 90-day action plan.</p>
+  </div>
+
+  <div class="card">
+    <form id="auditForm">
+
+      <!-- Account -->
+      <div class="section-title">Account</div>
+      <div class="grid grid-2">
+        <div class="field">
+          <label>Ad Account ID <span class="req">*</span></label>
+          <input type="text" name="accountId" required placeholder="1234567890" />
+        </div>
+        <div class="field">
+          <label>Brand Name <span class="req">*</span></label>
+          <input type="text" name="brandName" required placeholder="Acme Coffee Co." />
+        </div>
+      </div>
+
+      <div class="grid section-gap">
+        <div class="field">
+          <label>Product / Service Type <span class="req">*</span></label>
+          <input type="text" name="productType" required placeholder="Women's tuxedo ecommerce, B2B SaaS, Local restaurant..." />
+        </div>
+      </div>
+
+      <div class="grid section-gap">
+        <div class="field">
+          <label>Email <span class="req">*</span> <span class="hint">— report will also be emailed here</span></label>
+          <input type="email" name="email" required placeholder="you@example.com" />
+          <span class="email-note">In case you close the tab while the report generates (~1 min), we'll send it to your inbox.</span>
+        </div>
+      </div>
+
+      <!-- Goals -->
+      <div class="section-title section-gap">Goals &amp; Benchmarks</div>
+      <div class="grid grid-3">
+        <div class="field">
+          <label>Target ROAS <span class="hint">(optional)</span></label>
+          <input type="number" name="targetRoas" step="0.1" min="0" placeholder="3.5" />
+        </div>
+        <div class="field">
+          <label>Target CPP (USD) <span class="hint">(optional)</span></label>
+          <input type="number" name="targetCpp" step="1" min="0" placeholder="45" />
+        </div>
+        <div class="field">
+          <label>Avg. Margin % <span class="hint">(optional)</span></label>
+          <input type="number" name="margin" step="1" min="0" max="100" placeholder="55" />
+        </div>
+      </div>
+
+      <div class="grid grid-2 section-gap">
+        <div class="field">
+          <label>Monthly Ad Budget (USD) <span class="hint">(optional)</span></label>
+          <input type="number" name="monthlyBudget" step="100" min="0" placeholder="5000" />
+        </div>
+        <div class="field">
+          <label>Primary Goal <span class="req">*</span></label>
+          <select name="primaryGoal" required>
+            <option value="">Select...</option>
+            <option value="Purchases / Conversions">Purchases / Conversions</option>
+            <option value="Leads / Sign-ups">Leads / Sign-ups</option>
+            <option value="Website Traffic">Website Traffic</option>
+            <option value="Brand Awareness / Reach">Brand Awareness / Reach</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Audit Config -->
+      <div class="section-title section-gap">Audit Configuration</div>
+      <div class="grid grid-2">
+        <div class="field">
+          <label>Lookback Period <span class="req">*</span></label>
+          <select name="lookback" required>
+            <option value="30" selected>30 days</option>
+            <option value="60">60 days</option>
+            <option value="90">90 days</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Context -->
+      <div class="section-title section-gap">Brand Context</div>
+      <div class="field">
+        <label>Additional Context <span class="hint">(optional but recommended)</span></label>
+        <textarea name="additionalContext" placeholder="Key competitors, recent creative changes, seasonality, known issues, brand positioning, target demographics, recent promotions..."></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <div class="spinner" id="spinner"></div>
+        <svg id="submitIcon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <span id="submitLabel">Generate Audit Report</span>
+      </button>
+
+    </form>
+
+    <div class="status" id="status">
+      <div class="status-spinner" id="statusSpinner"></div>
+      <span id="statusText"></span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Production URL (workflow must be ACTIVE):
+  const WEBHOOK_URL = 'https://n8n.srv1201694.hstgr.cloud/webhook/meta-audit';
+  // Test URL (use while workflow is in "Listen for test event" mode):
+  // const WEBHOOK_URL = 'https://n8n.srv1201694.hstgr.cloud/webhook-test/meta-audit';
+
+  document.getElementById('auditForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const data = Object.fromEntries(new FormData(form));
+
+    // Coerce numeric fields
+    ['targetRoas', 'targetCpp', 'margin', 'monthlyBudget', 'lookback'].forEach(k => {
+      if (data[k]) data[k] = parseFloat(data[k]);
+    });
+
+    setLoading(true);
+    showStatus('loading', `Fetching account data and generating AI report — this takes about 1 minute. We'll also send a copy to ${data.email}.`);
+
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Server returned ${res.status}: ${errText.slice(0, 200)}`);
+      }
+
+      const blob = await res.blob();
+
+      // Auto-download the HTML file
+      const filename = `${(data.brandName || 'audit').toLowerCase().replace(/[^a-z0-9]+/g, '-')}-meta-audit.html`;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1000);
+
+      showStatus('success', `✓ Report downloaded as "${filename}". Open it in any browser. A copy was also sent to ${data.email}.`);
+      document.getElementById('statusSpinner').style.display = 'none';
+
+    } catch (err) {
+      showStatus('error', `Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  function setLoading(loading) {
+    const btn = document.getElementById('submitBtn');
+    const spinner = document.getElementById('spinner');
+    const icon = document.getElementById('submitIcon');
+    const label = document.getElementById('submitLabel');
+    btn.disabled = loading;
+    spinner.style.display = loading ? 'block' : 'none';
+    icon.style.display = loading ? 'none' : 'block';
+    label.textContent = loading ? 'Generating audit…' : 'Generate Audit Report';
+  }
+
+  function showStatus(type, msg) {
+    const el = document.getElementById('status');
+    const spinner = document.getElementById('statusSpinner');
+    const text = document.getElementById('statusText');
+    el.className = `status ${type}`;
+    el.style.display = 'flex';
+    spinner.style.display = type === 'loading' ? 'block' : 'none';
+    text.textContent = msg;
+  }
+</script>
+</body>
+</html>

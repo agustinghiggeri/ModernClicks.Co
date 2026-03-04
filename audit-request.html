@@ -238,18 +238,18 @@
       <div class="grid grid-2">
         <div class="field">
           <label>Ad Account ID <span class="req">*</span></label>
-          <input type="text" name="accountId" required placeholder="1234567890" />
+          <input type="text" name="accountId" required placeholder="1234567890" maxlength="25" />
         </div>
         <div class="field">
           <label>Brand Name <span class="req">*</span></label>
-          <input type="text" name="brandName" required placeholder="Acme Coffee Co." />
+          <input type="text" name="brandName" required placeholder="Acme Coffee Co." maxlength="100" />
         </div>
       </div>
 
       <div class="grid section-gap">
         <div class="field">
           <label>Product / Service Type <span class="req">*</span></label>
-          <input type="text" name="productType" required placeholder="Women's tuxedo ecommerce, B2B SaaS, Local restaurant..." />
+          <input type="text" name="productType" required placeholder="Women's tuxedo ecommerce, B2B SaaS, Local restaurant..." maxlength="200" />
         </div>
       </div>
 
@@ -312,7 +312,7 @@
       <div class="section-title section-gap">Brand Context</div>
       <div class="field">
         <label>Additional Context <span class="hint">(optional but recommended)</span></label>
-        <textarea name="additionalContext" placeholder="Key competitors, recent creative changes, seasonality, known issues, brand positioning, target demographics, recent promotions..."></textarea>
+        <textarea name="additionalContext" placeholder="Key competitors, recent creative changes, seasonality, known issues, brand positioning, target demographics, recent promotions..." maxlength="2000"></textarea>
       </div>
 
       <button type="submit" class="submit-btn" id="submitBtn">
@@ -361,8 +361,7 @@
       });
 
       if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Server returned ${res.status}: ${errText.slice(0, 200)}`);
+        throw new Error('Unable to process your request. Please try again in a few minutes.');
       }
 
       const blob = await res.blob();

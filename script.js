@@ -606,8 +606,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Store for tracking
-        localStorage.setItem('gs_current_lead', JSON.stringify(v2Data));
 
         // Track v2 form step 2 view (calendar booking)
         if (typeof gtag !== 'undefined') {
@@ -801,8 +799,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Store current lead for TY page (only keep latest, don't accumulate)
-                localStorage.setItem('gs_current_lead', JSON.stringify(leadData));
 
                 // Track form submission
                 if (typeof gtag !== 'undefined') {
@@ -1025,8 +1021,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Store current lead for TY page
-                localStorage.setItem('gs_current_lead', JSON.stringify(auditData));
 
                 // Track audit form submission
                 if (typeof gtag !== 'undefined') {

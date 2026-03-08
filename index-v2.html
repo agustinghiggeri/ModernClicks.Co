@@ -51,7 +51,7 @@
     /></noscript>
     <!-- End Meta Pixel Code -->
 </head>
-<body>
+<body class="light-theme">
     <!-- Grain overlay -->
     <div class="grain"></div>
 
@@ -230,7 +230,7 @@
 
                             <!-- Google Calendar Appointment Scheduling begin -->
                             <div class="calendar-container">
-                                <iframe id="calendar-iframe" src="" style="border: 0" width="100%" height="600" frameborder="0"></iframe>
+                                <iframe id="calendar-iframe" src="" style="border: 0" width="100%" height="600" frameborder="0" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
                                 <script>
                                   (function() {
                                     var DEFAULT_CAL = 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3sxWJQLh1AGfBlYs68bKR9uckO42vVnsWzozkEnbBFu5ftyD23NHi-2PXeJUPKy_rfUzzNoh98?gv=true';
@@ -327,5 +327,28 @@
     <!-- DOMPurify for secure HTML sanitization -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.8/dist/purify.min.js" integrity="sha384-6wXnC2p5OM4hdV3F7LqgJCJEhFZXI/oXTZF5sI0MqkFPg2xVVF6k" crossorigin="anonymous"></script>
     <script src="script.js"></script>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    ModernClicks
+                </div>
+                <nav class="footer-nav">
+                    <a href="index-v2-light.html">Home</a>
+                    <a href="audit-v2-light.html">Free Audit</a>
+                    <a href="audit-request.html">Audit Request</a>
+                    <a href="privacy-policy.html">Privacy Policy</a>
+                </nav>
+                <p class="footer-text">Ex-Agency Media Buyer &bull; $8M+ in Managed Spend</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

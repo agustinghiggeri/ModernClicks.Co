@@ -335,11 +335,8 @@
 </div>
 
 <script>
-  // Webhook URL resolved from SiteConfig (set via admin panel)
-  const _cfg = window.SiteConfig;
-  const WEBHOOK_URL = _cfg && _cfg.get('webhookTestMode')
-    ? 'https://n8n.srv1201694.hstgr.cloud/webhook-test/meta-audit'
-    : (_cfg ? _cfg.get('webhookUrl') : 'https://n8n.srv1201694.hstgr.cloud/webhook/meta-audit');
+  // Routed through a server-side Vercel function — n8n URL never exposed to browser
+  const WEBHOOK_URL = '/api/submit-audit';
 
   document.getElementById('auditForm').addEventListener('submit', async (e) => {
     e.preventDefault();

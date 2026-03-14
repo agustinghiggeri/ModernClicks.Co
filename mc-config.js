@@ -15,7 +15,7 @@
   }
 
   var CFG = {
-    defaultTheme:       'dark',
+    defaultTheme:       'light',
     spotsRemaining:     3,
     countdownEnabled:   true,
     exitIntentEnabled:  true,
@@ -23,8 +23,6 @@
     formsEnabled:       true,
     auditFormEnabled:   true,
     maintenanceMode:    false,
-    webhookUrl:         'https://n8n.srv1201694.hstgr.cloud/webhook/meta-audit',
-    webhookTestMode:    false,
     calendarUrl:        'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3sxWJQLh1AGfBlYs68bKR9uckO42vVnsWzozkEnbBFu5ftyD23NHi-2PXeJUPKy_rfUzzNoh98?gv=true',
     linkedinUrl:        'https://www.linkedin.com/'
   };

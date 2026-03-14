@@ -1,6 +1,10 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "functions": {
+    "api/submit-audit.js": { "maxDuration": 60 },
+    "api/submit-lead.js":  { "maxDuration": 10 }
+  },
   "headers": [
     {
       "source": "/(.*)",
@@ -12,10 +16,6 @@
         {
           "key": "X-Frame-Options",
           "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
         },
         {
           "key": "Referrer-Policy",
@@ -31,7 +31,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "upgrade-insecure-requests; default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://script.google.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://www.facebook.com https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://www.googletagmanager.com https://connect.facebook.net https://script.google.com https://www.google-analytics.com https://www.facebook.com https://n8n.srv1201694.hstgr.cloud; frame-src https://calendar.google.com; object-src 'none'; base-uri 'self'; form-action 'self' https://script.google.com;"
+          "value": "upgrade-insecure-requests; default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://www.facebook.com https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://www.googletagmanager.com https://connect.facebook.net https://www.google-analytics.com https://www.facebook.com; frame-src https://calendar.google.com; object-src 'none'; base-uri 'self'; form-action 'self';"
         },
         {
           "key": "Cross-Origin-Opener-Policy",

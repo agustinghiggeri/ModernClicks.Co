@@ -132,18 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
-    // --- Google Sheets URL Obfuscation ---
-    function getGoogleSheetsURL() {
-        // Base64 encoded URL (basic obfuscation)
-        const encoded = 'aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J3Qk41MkdNa0tueHJUV0JNNjJXUEZfdmtuMjJDR0c5YktWTUFBb3Y2MDVMR0xjVkNLRzJ3R0twUGV0MGpQYlpaYUUvZXhlYw==';
-        try {
-            return atob(encoded);
-        } catch (e) {
-            return null;
-        }
-    }
-
-    // --- UTM Parameter Tracking ---
+// --- UTM Parameter Tracking ---
     function getUTMParameters() {
         const urlParams = new URLSearchParams(window.location.search);
         return {
@@ -615,39 +604,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Send to Google Sheets via hidden form
-        const GOOGLE_SHEETS_URL = getGoogleSheetsURL();
-        if (GOOGLE_SHEETS_URL && GOOGLE_SHEETS_URL.startsWith('https://script.google.com/')) {
-            // Create hidden iframe to receive the form response
-            let iframe = document.getElementById('gs_hidden_iframe');
-            if (!iframe) {
-                iframe = document.createElement('iframe');
-                iframe.id = 'gs_hidden_iframe';
-                iframe.name = 'gs_hidden_iframe';
-                iframe.style.display = 'none';
-                document.body.appendChild(iframe);
-            }
-
-            // Build hidden form
-            const hiddenForm = document.createElement('form');
-            hiddenForm.method = 'POST';
-            hiddenForm.action = GOOGLE_SHEETS_URL;
-            hiddenForm.target = 'gs_hidden_iframe';
-
-            Object.entries(v2Data).forEach(([key, value]) => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = value;
-                hiddenForm.appendChild(input);
-            });
-
-            document.body.appendChild(hiddenForm);
-            hiddenForm.submit();
-            hiddenForm.remove();
-
-            console.log('V2 form data submitted to Google Sheets', v2Data);
-        }
+        // Send to Google Sheets via secure server-side proxy
+        fetch('/api/submit-lead', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(v2Data),
+        }).catch(() => {}); // fire-and-forget — calendar still shows regardless
     }
 
     // --- Form Modal ---
@@ -820,48 +782,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Submitting...';
 
-                // Send to Google Sheets via hidden form + iframe
-                // (fetch fails due to 302 redirect dropping POST body)
-                const GOOGLE_SHEETS_URL = getGoogleSheetsURL();
-                if (GOOGLE_SHEETS_URL && GOOGLE_SHEETS_URL.startsWith('https://script.google.com/')) {
-                    // Create hidden iframe to receive the form response
-                    let iframe = document.getElementById('gs_hidden_iframe');
-                    if (!iframe) {
-                        iframe = document.createElement('iframe');
-                        iframe.id = 'gs_hidden_iframe';
-                        iframe.name = 'gs_hidden_iframe';
-                        iframe.style.display = 'none';
-                        document.body.appendChild(iframe);
-                    }
-
-                    // Build a hidden form with the lead data
-                    const hiddenForm = document.createElement('form');
-                    hiddenForm.method = 'POST';
-                    hiddenForm.action = GOOGLE_SHEETS_URL;
-                    hiddenForm.target = 'gs_hidden_iframe';
-
-                    Object.entries(leadData).forEach(([key, value]) => {
-                        const input = document.createElement('input');
-                        input.type = 'hidden';
-                        input.name = key;
-                        input.value = value;
-                        hiddenForm.appendChild(input);
-                    });
-
-                    document.body.appendChild(hiddenForm);
-                    hiddenForm.submit();
-                    hiddenForm.remove();
-
-                    // Redirect after giving the form time to submit
-                    setTimeout(() => {
-                        window.location.href = 'thank-you.html';
-                    }, 1000);
-                } else {
-                    // No Sheets URL configured — just redirect
-                    setTimeout(() => {
-                        window.location.href = 'thank-you.html';
-                    }, 400);
-                }
+                // Send to Google Sheets via secure server-side proxy
+                fetch('/api/submit-lead', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(leadData),
+                }).catch(() => {}).finally(() => {
+                    window.location.href = 'thank-you.html';
+                });
             });
         }
     }
@@ -1042,47 +970,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Submitting...';
 
-                // Send to Google Sheets
-                const GOOGLE_SHEETS_URL = getGoogleSheetsURL();
-
-                if (GOOGLE_SHEETS_URL && GOOGLE_SHEETS_URL.startsWith('https://script.google.com/')) {
-                    // Create hidden iframe
-                    let iframe = document.getElementById('gs_hidden_iframe_audit');
-                    if (!iframe) {
-                        iframe = document.createElement('iframe');
-                        iframe.id = 'gs_hidden_iframe_audit';
-                        iframe.name = 'gs_hidden_iframe_audit';
-                        iframe.style.display = 'none';
-                        document.body.appendChild(iframe);
-                    }
-
-                    // Build hidden form
-                    const hiddenForm = document.createElement('form');
-                    hiddenForm.method = 'POST';
-                    hiddenForm.action = GOOGLE_SHEETS_URL;
-                    hiddenForm.target = 'gs_hidden_iframe_audit';
-
-                    Object.entries(auditData).forEach(([key, value]) => {
-                        const input = document.createElement('input');
-                        input.type = 'hidden';
-                        input.name = key;
-                        input.value = value;
-                        hiddenForm.appendChild(input);
-                    });
-
-                    document.body.appendChild(hiddenForm);
-                    hiddenForm.submit();
-                    hiddenForm.remove();
-
-                    // Redirect after submission
-                    setTimeout(() => {
-                        window.location.href = 'thank-you.html';
-                    }, 1000);
-                } else {
-                    setTimeout(() => {
-                        window.location.href = 'thank-you.html';
-                    }, 400);
-                }
+                // Send to Google Sheets via secure server-side proxy
+                fetch('/api/submit-lead', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(auditData),
+                }).catch(() => {}).finally(() => {
+                    window.location.href = 'thank-you.html';
+                });
             });
         }
     }

@@ -228,6 +228,13 @@ strong {
     color: var(--text-primary);
 }
 
+.nav-logo-img {
+    height: 36px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+}
+
 .logo-icon {
     display: flex;
     align-items: center;

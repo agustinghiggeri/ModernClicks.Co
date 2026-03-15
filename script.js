@@ -677,6 +677,9 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.classList.add('active');
             document.body.classList.add('modal-open');
 
+            // Re-issue CSRF token each time modal opens
+            initFormToken('leadForm');
+
             // Track modal open
             if (typeof gtag !== 'undefined') {
                 gtag('event', 'form_modal_open', {
@@ -867,6 +870,9 @@ document.addEventListener('DOMContentLoaded', () => {
         function openAuditModal() {
             auditModal.classList.add('active');
             document.body.classList.add('modal-open');
+
+            // Re-issue CSRF token each time modal opens
+            initFormToken('auditLeadForm');
 
             // Track audit modal open
             if (typeof gtag !== 'undefined') {

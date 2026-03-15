@@ -795,8 +795,32 @@
 
                             <!-- Phone -->
                             <div class="form-group">
-                                <label class="form-label" for="leadPhone">PHONE <span class="text-muted">(Optional)</span></label>
-                                <input class="form-input" type="tel" id="leadPhone" name="phone" placeholder="+1 (555) 000-0000" maxlength="20" autocomplete="tel">
+                                <label class="form-label" for="leadPhone">PHONE <span class="required">*</span></label>
+                                <div class="phone-input-group" id="leadPhoneGroup">
+                                    <select class="phone-country" id="leadCountryCode" aria-label="Country code">
+                                        <option value="+1">+1 US/CA</option>
+                                        <option value="+44">+44 UK</option>
+                                        <option value="+54">+54 AR</option>
+                                        <option value="+52">+52 MX</option>
+                                        <option value="+55">+55 BR</option>
+                                        <option value="+57">+57 CO</option>
+                                        <option value="+56">+56 CL</option>
+                                        <option value="+51">+51 PE</option>
+                                        <option value="+34">+34 ES</option>
+                                        <option value="+49">+49 DE</option>
+                                        <option value="+33">+33 FR</option>
+                                        <option value="+39">+39 IT</option>
+                                        <option value="+31">+31 NL</option>
+                                        <option value="+61">+61 AU</option>
+                                        <option value="+64">+64 NZ</option>
+                                        <option value="+91">+91 IN</option>
+                                        <option value="+971">+971 AE</option>
+                                        <option value="+27">+27 ZA</option>
+                                        <option value="+47">+47 NO</option>
+                                        <option value="+46">+46 SE</option>
+                                    </select>
+                                    <input class="form-input" type="tel" id="leadPhone" name="phone" placeholder="555 000 0000" maxlength="15" autocomplete="tel-national">
+                                </div>
                                 <span class="form-error">Please enter a valid phone number</span>
                             </div>
 

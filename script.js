@@ -42,12 +42,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return emailRegex.test(email) && email.length <= 254;
     }
 
-    function validatePhone(phone) {
-        if (!phone) return true; // Optional field
-        // Strip all valid formatting chars, then count raw digits
-        // E.164 standard: 7–15 digits (e.g. local 7-digit up to full intl 15-digit)
-        const digits = phone.replace(/[\s\-\.\(\)]/g, '');
-        return /^\+?[0-9]{7,15}$/.test(digits);
+    function validatePhone(localNumber) {
+        // Validate local part only (country code is handled by select)
+        // Strip formatting: spaces, dashes, dots, parens
+        const digits = localNumber.replace(/[\s\-\.\(\)]/g, '');
+        return /^[0-9]{4,12}$/.test(digits);
+    }
+
+    function getPhoneValue(countryCodeId, localInputId) {
+        const cc = document.getElementById(countryCodeId);
+        const local = document.getElementById(localInputId);
+        if (!cc || !local) return '';
+        return cc.value + ' ' + local.value.trim();
     }
 
     function validateURL(url) {
@@ -181,14 +187,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const firstName = document.getElementById('leadFirstName');
             const lastName = document.getElementById('leadLastName');
             const email = document.getElementById('leadEmail');
-            const phone = document.getElementById('leadPhone');
+            const phoneLocal = document.getElementById('leadPhone');
+            const phoneGroup = document.getElementById('leadPhoneGroup');
             let valid = true;
 
             // Clear previous errors
             if (firstName) firstName.classList.remove('error');
             if (lastName) lastName.classList.remove('error');
             email.classList.remove('error');
-            phone.classList.remove('error');
+            if (phoneGroup) phoneGroup.classList.remove('error');
 
             // Validate name fields
             if (firstName && !firstName.value.trim()) {
@@ -206,20 +213,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 valid = false;
             }
 
-            // Validate phone if provided
-            if (phone.value && !validatePhone(phone.value)) {
-                phone.classList.add('error');
+            // Phone required
+            if (!phoneLocal.value.trim() || !validatePhone(phoneLocal.value)) {
+                if (phoneGroup) phoneGroup.classList.add('error');
                 valid = false;
             }
 
             if (!valid) return;
 
-            // Save step 1 data
+            // Save step 1 data (combine country code + local number)
             const step1Data = {
                 firstName: firstName ? sanitize(firstName.value) : '',
                 lastName: lastName ? sanitize(lastName.value) : '',
                 email: sanitize(email.value),
-                phone: sanitize(phone.value)
+                phone: sanitize(getPhoneValue('leadCountryCode', 'leadPhone'))
             };
             sessionStorage.setItem('leadForm_step1', JSON.stringify(step1Data));
 
@@ -311,18 +318,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const firstName = document.getElementById('auditFirstName');
             const lastName = document.getElementById('auditLastName');
             const email = document.getElementById('auditEmail');
-            const phone = document.getElementById('auditPhone');
+            const phoneLocal = document.getElementById('auditPhone');
+            const phoneGroup = document.getElementById('auditPhoneGroup');
             let valid = true;
 
             if (firstName) firstName.classList.remove('error');
             if (lastName) lastName.classList.remove('error');
             email.classList.remove('error');
-            phone.classList.remove('error');
+            if (phoneGroup) phoneGroup.classList.remove('error');
 
             if (firstName && !firstName.value.trim()) { firstName.classList.add('error'); valid = false; }
             if (lastName && !lastName.value.trim()) { lastName.classList.add('error'); valid = false; }
             if (!validateEmail(email.value)) { email.classList.add('error'); valid = false; }
-            if (phone.value && !validatePhone(phone.value)) { phone.classList.add('error'); valid = false; }
+            if (!phoneLocal.value.trim() || !validatePhone(phoneLocal.value)) {
+                if (phoneGroup) phoneGroup.classList.add('error');
+                valid = false;
+            }
 
             if (!valid) return;
 
@@ -330,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 firstName: firstName ? sanitize(firstName.value) : '',
                 lastName: lastName ? sanitize(lastName.value) : '',
                 email: sanitize(email.value),
-                phone: sanitize(phone.value)
+                phone: sanitize(getPhoneValue('auditCountryCode', 'auditPhone'))
             };
 
             // Fire-and-forget submit, then redirect to /book with prefill params
@@ -851,10 +862,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Clear previous errors
                 auditLeadForm.querySelectorAll('.form-input').forEach(i => i.classList.remove('error'));
+                const auditPhoneGroupEl = document.getElementById('auditPhoneGroup');
+                if (auditPhoneGroupEl) auditPhoneGroupEl.classList.remove('error');
 
                 const email = document.getElementById('auditEmail');
                 const brand = document.getElementById('auditBrand');
-                const phone = document.getElementById('auditPhone');
+                const phoneLocal = document.getElementById('auditPhone');
                 const siteUrl = document.getElementById('auditSiteUrl');
                 let valid = true;
 
@@ -871,9 +884,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     valid = false;
                 }
 
-                // Validate phone (if provided)
-                if (phone.value && !validatePhone(phone.value)) {
-                    phone.classList.add('error');
+                // Phone required
+                if (!phoneLocal || !phoneLocal.value.trim() || !validatePhone(phoneLocal.value)) {
+                    if (auditPhoneGroupEl) auditPhoneGroupEl.classList.add('error');
                     valid = false;
                 }
 
@@ -896,7 +909,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     firstName: auditStep1Saved.firstName || '',
                     lastName: auditStep1Saved.lastName || '',
                     email: sanitize(email.value),
-                    phone: sanitize(phone.value),
+                    phone: sanitize(getPhoneValue('auditCountryCode', 'auditPhone')),
                     brand: sanitize(brand.value),
                     siteUrl: sanitize(siteUrl.value),
                     platform: platformChip ? sanitize(platformChip.dataset.value) : '',

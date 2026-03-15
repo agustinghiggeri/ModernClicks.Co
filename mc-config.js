@@ -35,7 +35,7 @@
     if (CFG.defaultTheme === 'light' && !isLight) {
       var lp = path.endsWith('.html') ? path.replace('.html', '-light.html')
              : (path === '/' || path === '') ? '/index-light' : path + '-light';
-      window.location.replace(lp);
+      window.location.replace(lp + window.location.search);
       return;
     }
     if (CFG.defaultTheme === 'dark' && isLight) {

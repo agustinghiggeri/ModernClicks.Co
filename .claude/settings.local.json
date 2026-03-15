@@ -11,7 +11,24 @@
       "Read(//e/Vs Code files/FunnelSalesv1/**)",
       "Bash(git revert:*)",
       "Bash(git fetch origin)",
-      "Bash(git merge origin/main)"
+      "Bash(git merge origin/main)",
+      "WebFetch(domain:www.jsdelivr.com)",
+      "WebFetch(domain:cdn.jsdelivr.net)",
+      "WebFetch(domain:data.jsdelivr.com)",
+      "Bash(curl -s \"https://cdn.jsdelivr.net/npm/dompurify@3.3.2/dist/purify.min.js\")",
+      "Bash(openssl dgst -sha384 -binary)",
+      "Bash(openssl base64 -A)",
+      "WebFetch(domain:modernclicks.co)",
+      "Bash(cp \"e:/Vs Code files/ModernClicks.Co/.claude/imags/LOGO 400X400.png\" \"e:/Vs Code files/ModernClicks.Co/images/logo.png\")",
+      "Bash(cp \"e:/Vs Code files/ModernClicks.Co/.claude/imags/LOGO WHITE.png\" \"e:/Vs Code files/ModernClicks.Co/images/logo-white.png\")",
+      "Bash(cp \"e:/Vs Code files/ModernClicks.Co/.claude/imags/google-ads-certified-1920w.webp\" \"e:/Vs Code files/ModernClicks.Co/images/google-ads-certified.webp\")",
+      "Bash(cp \"e:/Vs Code files/ModernClicks.Co/.claude/imags/images.png\" \"e:/Vs Code files/ModernClicks.Co/images/meta-certified.png\")",
+      "Bash(for f:*)",
+      "Bash(do)",
+      "Read(//e/Vs Code files/ModernClicks.Co/**)",
+      "Bash(sed -i '/Audit Request/d' \"$f\")",
+      "Bash(echo \"cleaned: $f\")",
+      "Bash(done)"
     ]
   }
 }

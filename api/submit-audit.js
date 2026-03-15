@@ -8,17 +8,90 @@
  * This function has maxDuration: 60 set in vercel.json (requires Vercel Pro).
  * On the free Hobby plan the hard limit is 10s — upgrade if timeouts occur.
  */
+
+const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/;
+const MAX_PAYLOAD_BYTES = 8192; // 8 KB
+
+function sanitize(value, maxLen) {
+  if (typeof value !== 'string') return '';
+  return value.trim().slice(0, maxLen);
+}
+
+function validateBody(body) {
+  const errors = [];
+
+  // Required string fields
+  const accountId = sanitize(body.accountId, 25);
+  const brandName  = sanitize(body.brandName,  100);
+  const productType = sanitize(body.productType, 200);
+  const email      = sanitize(body.email, 254);
+  const primaryGoal = sanitize(body.primaryGoal, 50);
+
+  if (!accountId)   errors.push('accountId is required');
+  if (!brandName)   errors.push('brandName is required');
+  if (!productType) errors.push('productType is required');
+  if (!email || !EMAIL_RE.test(email)) errors.push('valid email is required');
+
+  const allowed = ['Purchases / Conversions', 'Leads / Sign-ups', 'Website Traffic', 'Brand Awareness / Reach'];
+  if (!allowed.includes(primaryGoal)) errors.push('invalid primaryGoal');
+
+  const lookback = parseInt(body.lookback, 10);
+  if (![30, 60, 90].includes(lookback)) errors.push('invalid lookback period');
+
+  // Optional numeric fields — accept only finite numbers or omit
+  const numericFields = ['targetRoas', 'targetCpp', 'margin', 'monthlyBudget'];
+  for (const field of numericFields) {
+    if (body[field] !== undefined && body[field] !== '') {
+      const n = parseFloat(body[field]);
+      if (!isFinite(n) || n < 0) errors.push(`invalid ${field}`);
+    }
+  }
+
+  return errors;
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ status: 'error', message: 'Method not allowed' });
   }
 
-  const webhookUrl = process.env.N8N_WEBHOOK_URL;
+  // Guard payload size (Vercel parses JSON body automatically; re-stringify to measure)
+  const rawSize = Buffer.byteLength(JSON.stringify(req.body || {}), 'utf8');
+  if (rawSize > MAX_PAYLOAD_BYTES) {
+    return res.status(413).json({ status: 'error', message: 'Payload too large' });
+  }
+
+  const webhookUrl    = process.env.N8N_WEBHOOK_URL;
   const webhookSecret = process.env.N8N_WEBHOOK_SECRET;
 
   if (!webhookUrl || !webhookSecret) {
     console.error('N8N_WEBHOOK_URL or N8N_WEBHOOK_SECRET env var is not set');
     return res.status(500).json({ status: 'error', message: 'Server misconfiguration' });
+  }
+
+  // Validate and sanitize input
+  const errors = validateBody(req.body || {});
+  if (errors.length) {
+    return res.status(400).json({ status: 'error', message: errors[0] });
+  }
+
+  // Build a clean payload — only known fields forwarded to n8n
+  const body = req.body || {};
+  const payload = {
+    accountId:         sanitize(body.accountId, 25),
+    brandName:         sanitize(body.brandName, 100),
+    productType:       sanitize(body.productType, 200),
+    email:             sanitize(body.email, 254),
+    primaryGoal:       sanitize(body.primaryGoal, 50),
+    lookback:          parseInt(body.lookback, 10),
+    additionalContext: sanitize(body.additionalContext || '', 2000),
+  };
+
+  // Optional numeric fields
+  for (const field of ['targetRoas', 'targetCpp', 'margin', 'monthlyBudget']) {
+    if (body[field] !== undefined && body[field] !== '') {
+      payload[field] = parseFloat(body[field]);
+    }
   }
 
   try {
@@ -28,7 +101,7 @@ module.exports = async function handler(req, res) {
         'Content-Type': 'application/json',
         'X-Webhook-Secret': webhookSecret,
       },
-      body: JSON.stringify(req.body || {}),
+      body: JSON.stringify(payload),
     });
 
     if (!upstream.ok) {

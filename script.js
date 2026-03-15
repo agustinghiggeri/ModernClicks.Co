@@ -177,13 +177,27 @@ document.addEventListener('DOMContentLoaded', () => {
         // Step 1 -> Step 2
         continueBtn.addEventListener('click', () => {
             // Validate step 1 fields
+            const firstName = document.getElementById('leadFirstName');
+            const lastName = document.getElementById('leadLastName');
             const email = document.getElementById('leadEmail');
             const phone = document.getElementById('leadPhone');
             let valid = true;
 
             // Clear previous errors
+            if (firstName) firstName.classList.remove('error');
+            if (lastName) lastName.classList.remove('error');
             email.classList.remove('error');
             phone.classList.remove('error');
+
+            // Validate name fields
+            if (firstName && !firstName.value.trim()) {
+                firstName.classList.add('error');
+                valid = false;
+            }
+            if (lastName && !lastName.value.trim()) {
+                lastName.classList.add('error');
+                valid = false;
+            }
 
             // Validate email
             if (!validateEmail(email.value)) {
@@ -201,6 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Save step 1 data
             const step1Data = {
+                firstName: firstName ? sanitize(firstName.value) : '',
+                lastName: lastName ? sanitize(lastName.value) : '',
                 email: sanitize(email.value),
                 phone: sanitize(phone.value)
             };
@@ -299,13 +315,27 @@ document.addEventListener('DOMContentLoaded', () => {
         // Step 1 -> Step 2
         continueBtn.addEventListener('click', () => {
             // Validate step 1 fields
+            const firstName = document.getElementById('auditFirstName');
+            const lastName = document.getElementById('auditLastName');
             const email = document.getElementById('auditEmail');
             const phone = document.getElementById('auditPhone');
             let valid = true;
 
             // Clear previous errors
+            if (firstName) firstName.classList.remove('error');
+            if (lastName) lastName.classList.remove('error');
             email.classList.remove('error');
             phone.classList.remove('error');
+
+            // Validate name fields
+            if (firstName && !firstName.value.trim()) {
+                firstName.classList.add('error');
+                valid = false;
+            }
+            if (lastName && !lastName.value.trim()) {
+                lastName.classList.add('error');
+                valid = false;
+            }
 
             // Validate email
             if (!validateEmail(email.value)) {
@@ -323,6 +353,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Save step 1 data
             const step1Data = {
+                firstName: firstName ? sanitize(firstName.value) : '',
+                lastName: lastName ? sanitize(lastName.value) : '',
                 email: sanitize(email.value),
                 phone: sanitize(phone.value)
             };
@@ -745,7 +777,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const adSpendChip = document.querySelector('[data-name="adSpend"] .chip-selected');
                 const bizTypeChip = document.querySelector('[data-name="businessType"] .chip-selected');
 
+                const step1Saved = JSON.parse(sessionStorage.getItem('leadForm_step1') || '{}');
                 const leadData = {
+                    firstName: step1Saved.firstName || '',
+                    lastName: step1Saved.lastName || '',
                     email: sanitize(email.value),
                     phone: sanitize(phone.value),
                     brand: sanitize(brand.value),
@@ -783,12 +818,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.textContent = 'Submitting...';
 
                 // Send to Google Sheets via secure server-side proxy
+                const bookParams = new URLSearchParams({
+                    name: `${leadData.firstName} ${leadData.lastName}`.trim(),
+                    email: leadData.email,
+                    phone: leadData.phone,
+                    brand: leadData.brand
+                });
                 fetch('/api/submit-lead', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(leadData),
                 }).catch(() => {}).finally(() => {
-                    window.location.href = 'thank-you.html';
+                    window.location.href = `/book?${bookParams.toString()}`;
                 });
             });
         }
@@ -930,8 +971,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const adSpendChip = document.querySelector('[data-name="auditAdSpend"] .chip-selected');
                 const bizTypeChip = document.querySelector('[data-name="auditBusinessType"] .chip-selected');
 
+                const auditStep1Saved = JSON.parse(sessionStorage.getItem('auditForm_step1') || '{}');
                 const auditData = {
                     sheetName: 'audit',  // Target the "audit" tab
+                    firstName: auditStep1Saved.firstName || '',
+                    lastName: auditStep1Saved.lastName || '',
                     email: sanitize(email.value),
                     phone: sanitize(phone.value),
                     brand: sanitize(brand.value),
@@ -971,12 +1015,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.textContent = 'Submitting...';
 
                 // Send to Google Sheets via secure server-side proxy
+                const auditBookParams = new URLSearchParams({
+                    name: `${auditData.firstName} ${auditData.lastName}`.trim(),
+                    email: auditData.email,
+                    phone: auditData.phone,
+                    brand: auditData.brand
+                });
                 fetch('/api/submit-lead', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(auditData),
                 }).catch(() => {}).finally(() => {
-                    window.location.href = 'thank-you.html';
+                    window.location.href = `/book?${auditBookParams.toString()}`;
                 });
             });
         }

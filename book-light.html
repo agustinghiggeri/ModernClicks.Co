@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="/mc-config.js"></script>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <link rel="apple-touch-icon" href="/images/logo.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Pick a Time | ModernClicks</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body.book-page {
+            background: #f8f9fc;
+            color: #1a1f2e;
+            min-height: 100vh;
+        }
+        body.book-page .nav {
+            background: #ffffff;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+        }
+        body.book-page .nav-logo,
+        body.book-page .nav-back {
+            color: #1a1f2e;
+        }
+        .book-hero {
+            padding: 60px 20px 0;
+            text-align: center;
+        }
+        .book-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(99,102,241,0.08);
+            border: 1px solid rgba(99,102,241,0.2);
+            border-radius: 50px;
+            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #6366f1;
+            margin-bottom: 20px;
+        }
+        .book-badge-dot {
+            width: 6px;
+            height: 6px;
+            background: #6366f1;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        .book-title {
+            font-size: clamp(26px, 4vw, 38px);
+            font-weight: 800;
+            color: #1a1f2e;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+        .book-title .highlight {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .book-subtitle {
+            font-size: 16px;
+            color: #64748b;
+            max-width: 480px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+        .book-trust {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+        .book-trust-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+        }
+        .book-trust-item svg {
+            color: #10b981;
+            flex-shrink: 0;
+        }
+        .calendly-wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+        .calendly-loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+            font-size: 15px;
+        }
+        .calendly-loading-spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(99,102,241,0.2);
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        body.book-page .footer {
+            background: #ffffff;
+            border-top: 1px solid rgba(0,0,0,0.08);
+        }
+        body.book-page .footer-brand,
+        body.book-page .footer-nav a,
+        body.book-page .footer-text {
+            color: #64748b;
+        }
+        body.book-page .footer-nav a:hover {
+            color: #1a1f2e;
+        }
+    </style>
+</head>
+<body class="book-page light-theme">
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="/images/logo.png" alt="ModernClicks" class="nav-logo-img">
+            </a>
+            <a href="/" class="nav-back">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Back to Home
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="book-hero">
+        <div class="book-badge">
+            <span class="book-badge-dot"></span>
+            Step 2 of 2
+        </div>
+        <h1 class="book-title" id="bookTitle">
+            Pick a time that works for you
+        </h1>
+        <p class="book-subtitle">
+            30-minute strategy call. No pitch deck, no sales pressure — just a look at your ad account and an honest assessment.
+        </p>
+        <div class="book-trust">
+            <div class="book-trust-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Free 30-minute call
+            </div>
+            <div class="book-trust-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Calendar invite sent instantly
+            </div>
+            <div class="book-trust-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                No commitment required
+            </div>
+        </div>
+    </section>
+
+    <!-- Calendly Embed -->
+    <div class="calendly-wrap">
+        <div id="calendlyLoading" class="calendly-loading">
+            <div class="calendly-loading-spinner"></div>
+            Loading calendar…
+        </div>
+        <div class="calendly-inline-widget" id="calendlyWidget" style="min-width:320px;height:700px;display:none;"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                    ModernClicks
+                </div>
+                <nav class="footer-nav">
+                    <a href="/">Home</a>
+                    <a href="/audit-light">Free Audit</a>
+                    <a href="/privacy-policy">Privacy Policy</a>
+                </nav>
+                <p class="footer-text">Ex-Agency Media Buyer &bull; $8M+ in Managed Spend</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+    <script>
+    (function () {
+        // Read prefill params from URL
+        var params = new URLSearchParams(window.location.search);
+        var name  = params.get('name')  || '';
+        var email = params.get('email') || '';
+        var phone = params.get('phone') || '';
+        var brand = params.get('brand') || '';
+
+        // Personalise the title if we have a first name
+        var firstName = name.split(' ')[0];
+        if (firstName) {
+            var titleEl = document.getElementById('bookTitle');
+            if (titleEl) {
+                titleEl.innerHTML = 'Pick a time that works for you, <span class="highlight">' +
+                    firstName.charAt(0).toUpperCase() + firstName.slice(1) + '</span>';
+            }
+        }
+
+        // Build Calendly URL with prefill
+        var baseUrl = 'https://calendly.com/admin-modernclicks/30min';
+        var calParams = new URLSearchParams();
+        if (name)  calParams.set('name', name);
+        if (email) calParams.set('email', email);
+        if (phone) calParams.set('a1', phone);   // maps to first custom question (phone)
+        if (brand) calParams.set('a2', brand);   // maps to second custom question (company)
+        calParams.set('hide_gdpr_banner', '1');
+        calParams.set('primary_color', '6366f1');
+
+        var calendlyUrl = baseUrl + '?' + calParams.toString();
+
+        // Init widget once widget.js is ready
+        function initCalendly() {
+            var widget = document.getElementById('calendlyWidget');
+            var loading = document.getElementById('calendlyLoading');
+            if (widget && window.Calendly) {
+                widget.setAttribute('data-url', calendlyUrl);
+                Calendly.initInlineWidget({
+                    url: calendlyUrl,
+                    parentElement: widget,
+                    prefill: { name: name, email: email }
+                });
+                loading.style.display = 'none';
+                widget.style.display = 'block';
+            }
+        }
+
+        // Calendly widget.js is async — poll until available
+        var attempts = 0;
+        var poll = setInterval(function () {
+            attempts++;
+            if (window.Calendly) {
+                clearInterval(poll);
+                initCalendly();
+            } else if (attempts > 50) {
+                clearInterval(poll);
+                // Fallback: show direct link
+                var loading = document.getElementById('calendlyLoading');
+                if (loading) {
+                    loading.innerHTML = '<a href="' + calendlyUrl + '" target="_blank" rel="noopener" class="btn btn-primary">Open Calendar &rarr;</a>';
+                }
+            }
+        }, 200);
+
+        // Listen for booking confirmation → redirect to thank-you
+        window.addEventListener('message', function (e) {
+            if (e.data && e.data.event === 'calendly.event_scheduled') {
+                window.location.href = '/thank-you';
+            }
+        });
+    })();
+    </script>
+</body>
+</html>

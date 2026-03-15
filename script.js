@@ -303,139 +303,50 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Audit Form (auditLeadForm) Step Navigation ---
     function setupAuditFormSteps() {
         const step1 = document.getElementById('auditStep1');
-        const step2 = document.getElementById('auditStep2');
         const continueBtn = document.getElementById('auditContinueBtn');
-        const backBtn = document.getElementById('auditBackBtn');
-        const currentStepEl = document.getElementById('auditCurrentStep');
-        const progressFill = document.getElementById('auditProgressFill');
-        const progressPercent = document.getElementById('auditProgressPercent');
-        const step1Summary = document.getElementById('auditStep1Summary');
 
-        if (!step1 || !step2 || !continueBtn) return;
+        if (!step1 || !continueBtn) return;
 
-        // Step 1 -> Step 2
         continueBtn.addEventListener('click', () => {
-            // Validate step 1 fields
             const firstName = document.getElementById('auditFirstName');
             const lastName = document.getElementById('auditLastName');
             const email = document.getElementById('auditEmail');
             const phone = document.getElementById('auditPhone');
             let valid = true;
 
-            // Clear previous errors
             if (firstName) firstName.classList.remove('error');
             if (lastName) lastName.classList.remove('error');
             email.classList.remove('error');
             phone.classList.remove('error');
 
-            // Validate name fields
-            if (firstName && !firstName.value.trim()) {
-                firstName.classList.add('error');
-                valid = false;
-            }
-            if (lastName && !lastName.value.trim()) {
-                lastName.classList.add('error');
-                valid = false;
-            }
-
-            // Validate email
-            if (!validateEmail(email.value)) {
-                email.classList.add('error');
-                valid = false;
-            }
-
-            // Validate phone if provided
-            if (phone.value && !validatePhone(phone.value)) {
-                phone.classList.add('error');
-                valid = false;
-            }
+            if (firstName && !firstName.value.trim()) { firstName.classList.add('error'); valid = false; }
+            if (lastName && !lastName.value.trim()) { lastName.classList.add('error'); valid = false; }
+            if (!validateEmail(email.value)) { email.classList.add('error'); valid = false; }
+            if (phone.value && !validatePhone(phone.value)) { phone.classList.add('error'); valid = false; }
 
             if (!valid) return;
 
-            // Save step 1 data
             const step1Data = {
                 firstName: firstName ? sanitize(firstName.value) : '',
                 lastName: lastName ? sanitize(lastName.value) : '',
                 email: sanitize(email.value),
                 phone: sanitize(phone.value)
             };
-            sessionStorage.setItem('auditForm_step1', JSON.stringify(step1Data));
 
-            // For v2: Submit data immediately when reaching Step 2 (calendar)
-            if (isV2) {
-                submitV2FormData(step1Data, 'audit');
-            }
+            // Fire-and-forget submit, then redirect to /book with prefill params
+            submitV2FormData(step1Data, 'audit');
 
-            // Update summary (skip for v2 since no summary in calendar step)
-            if (step1Summary) {
-                const summaryText = phone.value
-                    ? `${email.value} • ${phone.value}`
-                    : email.value;
-                step1Summary.textContent = summaryText;
-            }
+            const bookParams = new URLSearchParams({
+                firstName: step1Data.firstName,
+                lastName: step1Data.lastName,
+                email: step1Data.email,
+                phone: step1Data.phone
+            });
 
-            // Animate transition
-            step1.classList.remove('active');
-            step1.classList.add('exiting');
-
-            setTimeout(() => {
-                step1.style.display = 'none';
-                step1.classList.remove('exiting');
-                step2.classList.add('active');
-                step2.style.display = 'block';
-
-                // Update progress
-                currentStepEl.textContent = '2';
-                progressFill.style.width = '100%';
-                progressPercent.textContent = '100%';
-
-                // Focus first input in step 2
-                const brandInput = document.getElementById('auditBrand');
-                if (brandInput) brandInput.focus();
-
-                // Track step 2 view
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'form_step_2_view', {
-                        event_category: 'form',
-                        event_label: 'Audit Form Step 2'
-                    });
-                }
-            }, 300);
+            continueBtn.disabled = true;
+            continueBtn.textContent = 'Loading...';
+            window.location.href = `/book?${bookParams.toString()}`;
         });
-
-        // Step 2 -> Step 1 (Back button)
-        if (backBtn) {
-            backBtn.addEventListener('click', () => {
-                step2.classList.remove('active');
-                step2.classList.add('exiting');
-
-                setTimeout(() => {
-                    step2.style.display = 'none';
-                    step2.classList.remove('exiting');
-                    step1.classList.add('active');
-                    step1.style.display = 'block';
-
-                    // Update progress
-                    currentStepEl.textContent = '1';
-                    progressFill.style.width = '50%';
-                    progressPercent.textContent = '50%';
-                }, 300);
-            });
-        }
-
-        // Booking confirmed button (v2 only)
-        const auditBookingConfirmedBtn = document.getElementById('auditBookingConfirmedBtn');
-        if (auditBookingConfirmedBtn) {
-            auditBookingConfirmedBtn.addEventListener('click', () => {
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'booking_confirmed', {
-                        event_category: 'form_v2',
-                        event_label: 'Audit - Booking Confirmed'
-                    });
-                }
-                window.location.href = 'thank-you.html';
-            });
-        }
     }
 
     // Initialize step navigation when modals are available

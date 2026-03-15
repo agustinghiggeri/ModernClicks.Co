@@ -3422,3 +3422,135 @@ body.light-theme .who-split-card {
         gap: 28px;
     }
 }
+
+/* ============================================
+   FOUNDER SECTION
+   ============================================ */
+.founder-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+}
+
+.founder-photo-wrap {
+    flex-shrink: 0;
+}
+
+.founder-photo {
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    border: 3px solid var(--accent-primary);
+    box-shadow: 0 0 40px var(--accent-glow);
+    display: block;
+}
+
+.founder-content .section-tag {
+    margin-bottom: 1rem;
+    display: inline-block;
+}
+
+.founder-name {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.founder-bio {
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 0.875rem;
+    max-width: 560px;
+}
+
+.founder-creds {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.cred-tag {
+    padding: 0.375rem 0.875rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--accent-subtle);
+}
+
+/* ============================================
+   BOOKING STEPS (below final CTA)
+   ============================================ */
+.booking-steps {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+}
+
+.booking-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    max-width: 200px;
+    text-align: left;
+}
+
+.booking-step-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-primary);
+    color: var(--accent-primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.booking-step p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-top: 0.35rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .founder-wrapper {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+    }
+
+    .founder-photo {
+        width: 180px;
+        height: 180px;
+    }
+
+    .founder-bio {
+        max-width: 100%;
+    }
+
+    .founder-creds {
+        justify-content: center;
+    }
+
+    .booking-steps {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .booking-step {
+        max-width: 100%;
+    }
+}

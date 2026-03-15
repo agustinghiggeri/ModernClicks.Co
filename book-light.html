@@ -186,9 +186,12 @@
     <script>
     (function () {
         var p = new URLSearchParams(window.location.search);
+        var firstName = p.get('firstName') || '';
+        var lastName  = p.get('lastName')  || '';
         var base = 'https://calendly.com/admin-modernclicks/30min';
         var q = new URLSearchParams();
-        if (p.get('name'))  q.set('name',  p.get('name'));
+        if (firstName) q.set('first_name', firstName);
+        if (lastName)  q.set('last_name',  lastName);
         if (p.get('email')) q.set('email', p.get('email'));
         if (p.get('phone')) q.set('a1',    p.get('phone'));
         if (p.get('brand')) q.set('a2',    p.get('brand'));
@@ -197,10 +200,9 @@
         document.getElementById('calendlyWidget').setAttribute('data-url', base + '?' + q.toString());
 
         // Personalise heading with first name
-        var first = (p.get('name') || '').split(' ')[0];
-        if (first) {
+        if (firstName) {
             var el = document.getElementById('bookTitle');
-            if (el) el.innerHTML = 'Pick a time, <span class="highlight">' + first + '</span>';
+            if (el) el.innerHTML = 'Pick a time, <span class="highlight">' + firstName + '</span>';
         }
 
         // After booking → redirect to thank-you

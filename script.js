@@ -822,7 +822,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Send to Google Sheets via secure server-side proxy
                 const bookParams = new URLSearchParams({
-                    name: `${leadData.firstName} ${leadData.lastName}`.trim(),
+                    firstName: leadData.firstName,
+                    lastName: leadData.lastName,
                     email: leadData.email,
                     phone: leadData.phone,
                     brand: leadData.brand
@@ -1022,7 +1023,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Send to Google Sheets via secure server-side proxy
                 const auditBookParams = new URLSearchParams({
-                    name: `${auditData.firstName} ${auditData.lastName}`.trim(),
+                    firstName: auditData.firstName,
+                    lastName: auditData.lastName,
                     email: auditData.email,
                     phone: auditData.phone,
                     brand: auditData.brand

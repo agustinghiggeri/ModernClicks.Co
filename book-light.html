@@ -178,12 +178,39 @@
 
     <!-- Calendly Embed -->
     <div class="calendly-wrap">
-        <div id="calendlyLoading" class="calendly-loading">
-            <div class="calendly-loading-spinner"></div>
-            Loading calendar…
-        </div>
-        <div class="calendly-inline-widget" id="calendlyWidget" style="min-width:320px;height:700px;display:none;"></div>
+        <!-- data-url is set by the inline script below before widget.js runs -->
+        <div class="calendly-inline-widget" id="calendlyWidget" style="min-width:320px;height:700px;"></div>
     </div>
+
+    <!-- Build prefill URL before widget.js loads -->
+    <script>
+    (function () {
+        var p = new URLSearchParams(window.location.search);
+        var base = 'https://calendly.com/admin-modernclicks/30min';
+        var q = new URLSearchParams();
+        if (p.get('name'))  q.set('name',  p.get('name'));
+        if (p.get('email')) q.set('email', p.get('email'));
+        if (p.get('phone')) q.set('a1',    p.get('phone'));
+        if (p.get('brand')) q.set('a2',    p.get('brand'));
+        q.set('hide_gdpr_banner', '1');
+        q.set('primary_color', '6366f1');
+        document.getElementById('calendlyWidget').setAttribute('data-url', base + '?' + q.toString());
+
+        // Personalise heading with first name
+        var first = (p.get('name') || '').split(' ')[0];
+        if (first) {
+            var el = document.getElementById('bookTitle');
+            if (el) el.innerHTML = 'Pick a time, <span class="highlight">' + first + '</span>';
+        }
+
+        // After booking → redirect to thank-you
+        window.addEventListener('message', function (e) {
+            if (e.data && e.data.event === 'calendly.event_scheduled') {
+                window.location.href = '/thank-you';
+            }
+        });
+    })();
+    </script>
 
     <!-- Footer -->
     <footer class="footer">
@@ -205,78 +232,7 @@
         </div>
     </footer>
 
-    <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
-    <script>
-    (function () {
-        // Read prefill params from URL
-        var params = new URLSearchParams(window.location.search);
-        var name  = params.get('name')  || '';
-        var email = params.get('email') || '';
-        var phone = params.get('phone') || '';
-        var brand = params.get('brand') || '';
-
-        // Personalise the title if we have a first name
-        var firstName = name.split(' ')[0];
-        if (firstName) {
-            var titleEl = document.getElementById('bookTitle');
-            if (titleEl) {
-                titleEl.innerHTML = 'Pick a time that works for you, <span class="highlight">' +
-                    firstName.charAt(0).toUpperCase() + firstName.slice(1) + '</span>';
-            }
-        }
-
-        // Build Calendly URL with prefill
-        var baseUrl = 'https://calendly.com/admin-modernclicks/30min';
-        var calParams = new URLSearchParams();
-        if (name)  calParams.set('name', name);
-        if (email) calParams.set('email', email);
-        if (phone) calParams.set('a1', phone);   // maps to first custom question (phone)
-        if (brand) calParams.set('a2', brand);   // maps to second custom question (company)
-        calParams.set('hide_gdpr_banner', '1');
-        calParams.set('primary_color', '6366f1');
-
-        var calendlyUrl = baseUrl + '?' + calParams.toString();
-
-        // Init widget once widget.js is ready
-        function initCalendly() {
-            var widget = document.getElementById('calendlyWidget');
-            var loading = document.getElementById('calendlyLoading');
-            if (widget && window.Calendly) {
-                widget.setAttribute('data-url', calendlyUrl);
-                Calendly.initInlineWidget({
-                    url: calendlyUrl,
-                    parentElement: widget,
-                    prefill: { name: name, email: email }
-                });
-                loading.style.display = 'none';
-                widget.style.display = 'block';
-            }
-        }
-
-        // Calendly widget.js is async — poll until available
-        var attempts = 0;
-        var poll = setInterval(function () {
-            attempts++;
-            if (window.Calendly) {
-                clearInterval(poll);
-                initCalendly();
-            } else if (attempts > 50) {
-                clearInterval(poll);
-                // Fallback: show direct link
-                var loading = document.getElementById('calendlyLoading');
-                if (loading) {
-                    loading.innerHTML = '<a href="' + calendlyUrl + '" target="_blank" rel="noopener" class="btn btn-primary">Open Calendar &rarr;</a>';
-                }
-            }
-        }, 200);
-
-        // Listen for booking confirmation → redirect to thank-you
-        window.addEventListener('message', function (e) {
-            if (e.data && e.data.event === 'calendly.event_scheduled') {
-                window.location.href = '/thank-you';
-            }
-        });
-    })();
-    </script>
+    <!-- Calendly widget.js — reads data-url set above -->
+    <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
 </body>
 </html>

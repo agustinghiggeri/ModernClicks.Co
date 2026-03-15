@@ -44,9 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function validatePhone(phone) {
         if (!phone) return true; // Optional field
-        // International phone format (allows +, -, spaces, parentheses, digits)
-        const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,9}$/;
-        return phoneRegex.test(phone) && phone.length <= 20;
+        // Strip all valid formatting chars, then count raw digits
+        // E.164 standard: 7–15 digits (e.g. local 7-digit up to full intl 15-digit)
+        const digits = phone.replace(/[\s\-\.\(\)]/g, '');
+        return /^\+?[0-9]{7,15}$/.test(digits);
     }
 
     function validateURL(url) {

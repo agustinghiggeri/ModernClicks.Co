@@ -258,6 +258,11 @@ strong {
     color: var(--text-primary);
 }
 
+.nav-links a.nav-active {
+    color: var(--accent);
+    font-weight: 600;
+}
+
 .nav-cta {
     font-size: 14px;
     font-weight: 600;

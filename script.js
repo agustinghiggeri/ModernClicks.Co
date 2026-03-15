@@ -191,11 +191,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const phoneGroup = document.getElementById('leadPhoneGroup');
             let valid = true;
 
+            // Helper: show/hide phone error message via JS (more reliable than CSS + selector)
+            const phoneErrorSpan = phoneGroup ? phoneGroup.nextElementSibling : null;
+            function showPhoneError() {
+                if (phoneGroup) phoneGroup.classList.add('error');
+                if (phoneErrorSpan && phoneErrorSpan.classList.contains('form-error')) phoneErrorSpan.style.display = 'block';
+            }
+            function clearPhoneError() {
+                if (phoneGroup) phoneGroup.classList.remove('error');
+                if (phoneErrorSpan && phoneErrorSpan.classList.contains('form-error')) phoneErrorSpan.style.display = '';
+            }
+
             // Clear previous errors
             if (firstName) firstName.classList.remove('error');
             if (lastName) lastName.classList.remove('error');
             email.classList.remove('error');
-            if (phoneGroup) phoneGroup.classList.remove('error');
+            clearPhoneError();
 
             // Validate name fields
             if (firstName && !firstName.value.trim()) {
@@ -214,8 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Phone required
-            if (!phoneLocal.value.trim() || !validatePhone(phoneLocal.value)) {
-                if (phoneGroup) phoneGroup.classList.add('error');
+            if (!phoneLocal || !phoneLocal.value.trim() || !validatePhone(phoneLocal.value)) {
+                showPhoneError();
                 valid = false;
             }
 
@@ -235,12 +246,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitV2FormData(step1Data, 'lead');
             }
 
-            // Update summary (skip for v2 since no summary in calendar step)
+            // Update summary
             if (step1Summary) {
-                const summaryText = phone.value
-                    ? `${email.value} • ${phone.value}`
+                step1Summary.textContent = phoneLocal.value
+                    ? `${email.value} • ${phoneLocal.value}`
                     : email.value;
-                step1Summary.textContent = summaryText;
             }
 
             // Animate transition
@@ -322,16 +332,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const phoneGroup = document.getElementById('auditPhoneGroup');
             let valid = true;
 
+            const auditPhoneErrorSpan = phoneGroup ? phoneGroup.nextElementSibling : null;
+            function showAuditPhoneError() {
+                if (phoneGroup) phoneGroup.classList.add('error');
+                if (auditPhoneErrorSpan && auditPhoneErrorSpan.classList.contains('form-error')) auditPhoneErrorSpan.style.display = 'block';
+            }
+            function clearAuditPhoneError() {
+                if (phoneGroup) phoneGroup.classList.remove('error');
+                if (auditPhoneErrorSpan && auditPhoneErrorSpan.classList.contains('form-error')) auditPhoneErrorSpan.style.display = '';
+            }
+
             if (firstName) firstName.classList.remove('error');
             if (lastName) lastName.classList.remove('error');
             email.classList.remove('error');
-            if (phoneGroup) phoneGroup.classList.remove('error');
+            clearAuditPhoneError();
 
             if (firstName && !firstName.value.trim()) { firstName.classList.add('error'); valid = false; }
             if (lastName && !lastName.value.trim()) { lastName.classList.add('error'); valid = false; }
             if (!validateEmail(email.value)) { email.classList.add('error'); valid = false; }
-            if (!phoneLocal.value.trim() || !validatePhone(phoneLocal.value)) {
-                if (phoneGroup) phoneGroup.classList.add('error');
+            if (!phoneLocal || !phoneLocal.value.trim() || !validatePhone(phoneLocal.value)) {
+                showAuditPhoneError();
                 valid = false;
             }
 
